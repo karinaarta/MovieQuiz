@@ -105,6 +105,7 @@ final class MovieQuizViewController: UIViewController {
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
         imageView.layer.borderColor = UIColor.clear.cgColor
+        imageView.layer.cornerRadius = imageView.bounds.height / 20
     }
     
     private func showCurrentQuestion() {
@@ -159,7 +160,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         showCurrentQuestion()
-        imageView.layer.cornerRadius = imageView.bounds.height / 20
+        
     }
 }
 /*
