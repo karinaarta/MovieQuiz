@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     // MARK: - Lifecycle
     
     @IBOutlet private weak var imageView: UIImageView!
@@ -28,7 +28,7 @@ final class MovieQuizViewController: UIViewController {
     private var correctAnswers = 0
     
     private let questionsAmount: Int = 10
-    private let questionFactory: QuestionFactoryProtocol = QuestionFactory()
+    private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -40,84 +40,97 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func createResultModel () -> QuizResultsViewModel {
-           let text = correctAnswers == questionsAmount ?
-           "Поздравляем, вы ответили на 10 из 10!" :
-           "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
-           let result = QuizResultsViewModel(
-               title: "Этот раунд окончен",
-               text: text,
-               buttonText: "Сыграть еще раз"
-           )
-           return result
-       }
-       
-       private func show(quiz step: QuizStepViewModel) {
-           imageView.image = step.image
-           textLabel.text = step.question
-           counterLabel.text = step.questionNumber
-           imageView.layer.borderColor = UIColor.clear.cgColor
-           imageView.layer.cornerRadius = 20
-       }
-       
-       private func showCurrentQuestion() {
-           if let firstQuestion = questionFactory.requestNextQuestion() {
-               currentQuestion = firstQuestion
-               let viewModel = convert(model: firstQuestion)
-               show(quiz: viewModel)
-           }
-       }
-       private func showAnswerResult(isCorrect: Bool) {
-           if isCorrect == true{
-               correctAnswers += 1
-           }
-           
-           imageView.layer.masksToBounds = true
-           imageView.layer.borderWidth = 8
-           imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-           imageView.layer.cornerRadius = 20
-           
-           DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-               guard let self = self else { return }
-               self.showNextQuestionOrResults()
-           }
-       }
-       
-       private func showNextQuestionOrResults() {
-           if currentQuestionIndex == questionsAmount - 1 {
-               let result =  createResultModel()
-               showResult(model: result)
-           } else {
-               currentQuestionIndex += 1
-               showCurrentQuestion()
-           }
-       }
-       
-       private  func showResult(model: QuizResultsViewModel) {
-           let alert = UIAlertController(
-               title: model.title,
-               message: model.text,
-               preferredStyle: .alert)
-           
-           let action = UIAlertAction(title: model.buttonText, style: .default) { [weak self] _ in
-               guard let self = self else { return }
-               
-               self.currentQuestionIndex = 0
-               self.correctAnswers = 0
-               
-               if let firstQuestion = self.questionFactory.requestNextQuestion() {
-                   self.currentQuestion = firstQuestion
-                   let viewModel = self.convert(model: firstQuestion)
-                   
-                   self.show(quiz: viewModel)
-               }
-           }
-           
-           alert.addAction(action)
-           
-           self.present(alert, animated: true, completion: nil)
-       }
-   override func viewDidLoad() {
-               super.viewDidLoad()
-               showCurrentQuestion()
-           }
-       }
+        let text = correctAnswers == questionsAmount ?
+        "Поздравляем, вы ответили на 10 из 10!" :
+        "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
+        let result = QuizResultsViewModel(
+            title: "Этот раунд окончен",
+            text: text,
+            buttonText: "Сыграть еще раз"
+        )
+        return result
+    }
+    
+    private func show(quiz step: QuizStepViewModel) {
+        imageView.image = step.image
+        textLabel.text = step.question
+        counterLabel.text = step.questionNumber
+        imageView.layer.borderColor = UIColor.clear.cgColor
+        imageView.layer.cornerRadius = 20
+    }
+    
+    private func showCurrentQuestion() {
+        questionFactory.requestNextQuestion()
+    }
+    private func showAnswerResult(isCorrect: Bool) {
+        if isCorrect == true{
+            correctAnswers += 1
+        }
+        
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 8
+        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        imageView.layer.cornerRadius = 20
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
+        }
+    }
+    
+    private func showNextQuestionOrResults() {
+        if currentQuestionIndex == questionsAmount - 1 {
+            let result =  createResultModel()
+            showResult(model: result)
+        } else {
+            currentQuestionIndex += 1
+            showCurrentQuestion()
+        }
+    }
+    
+    private  func showResult(model: QuizResultsViewModel) {
+        let alert = UIAlertController(
+            title: model.title,
+            message: model.text,
+            preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: model.buttonText, style: .default) { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.currentQuestionIndex = 0
+            self.correctAnswers = 0
+            
+            questionFactory.requestNextQuestion()
+        }
+        
+        alert.addAction(action)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let questionFactory = QuestionFactory()
+        questionFactory.setup(delegate: self)
+        self.questionFactory = questionFactory
+        
+      
+        questionFactory.requestNextQuestion()
+        
+        showCurrentQuestion()
+        
+    }
+    // MARK: - QuestionFactoryDelegate
+    
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else {
+            return
+        }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.show(quiz: viewModel)
+        }
+    }
+}
