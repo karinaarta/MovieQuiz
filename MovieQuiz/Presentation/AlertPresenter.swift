@@ -6,8 +6,6 @@
 //
 import UIKit
 
-
-
 final class AlertPresenter {
     
     private weak var viewController: UIViewController?
@@ -30,5 +28,5 @@ final class AlertPresenter {
         
         viewController?.present(alert, animated: true, completion: nil)
     }
-
+    
 }

@@ -7,6 +7,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     @IBOutlet private weak var textLabel: UILabel!
     @IBOutlet private weak var counterLabel: UILabel!
     
+    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet weak var yesButton: UIButton!
     @IBAction private func noButtonClicked(_ sender: UIButton) {
         guard let currentQuestion = currentQuestion else {
             return
@@ -30,6 +32,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenter?
+    private let statisticService: StatisticServiceProtocol = StatisticService()
     
     // MARK: - Lifecycle
     
@@ -47,7 +50,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     }
     
     // MARK: - Private Methods
-  
+    
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
             image: UIImage(named: model.image) ?? UIImage(),
@@ -89,54 +92,54 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         imageView.layer.cornerRadius = 20
-        
+       
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.showNextQuestionOrResults()
+           
         }
     }
     
     private func showNextQuestionOrResults() {
-            if currentQuestionIndex == questionsAmount - 1 {
-                let resultModel = createResultModel()
-                
-                let statisticService = StatisticService()
-                statisticService.store(correct: correctAnswers, total: questionsAmount)
-                
-                let gamesPlayed = statisticService.gamesCount
-                let bestGame = statisticService.bestGame
-                let highestCorrect = statisticService.highestCorrect
-                
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "dd.MM.yy HH:mm"
-                let formattedDate = dateFormatter.string(from: bestGame.date)
-                
-                let message = """
+        if currentQuestionIndex == questionsAmount - 1 {
+            let resultModel = createResultModel()
+            
+            statisticService.store(correct: correctAnswers, total: questionsAmount)
+            
+            let gamesPlayed = statisticService.gamesCount
+            let bestGame = statisticService.bestGame
+            let highestCorrect = statisticService.highestCorrect
+            
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd.MM.yy HH:mm"
+            let formattedDate = dateFormatter.string(from: bestGame.date)
+            
+            let message = """
                 \(resultModel.text)
                 Количество сыгранных квизов: \(gamesPlayed)
                 Рекорд: \(highestCorrect)/10 (\(formattedDate))
                 Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
                 """
+            
+            let alertModel = AlertModel(
+                title: "Этот раунд окончен",
+                message: message,
+                buttonText: resultModel.buttonText
+            ) { [weak self] in
+                guard let self = self else { return }
                 
-                let alertModel = AlertModel(
-                    title: "Этот раунд окончен",
-                    message: message,
-                    buttonText: resultModel.buttonText
-                ) { [weak self] in
-                    guard let self = self else { return }
-                    
-                    self.currentQuestionIndex = 0
-                    self.correctAnswers = 0
-                    
-                    self.questionFactory.requestNextQuestion()
-                }
+                self.currentQuestionIndex = 0
+                self.correctAnswers = 0
                 
-                alertPresenter?.showAlert(model: alertModel)
-            } else {
-                currentQuestionIndex += 1
-                showCurrentQuestion()
+                self.questionFactory.requestNextQuestion()
             }
+            
+            alertPresenter?.showAlert(model: alertModel)
+        } else {
+            currentQuestionIndex += 1
+            showCurrentQuestion()
         }
+    }
     
     
     
