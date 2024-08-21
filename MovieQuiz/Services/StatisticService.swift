@@ -7,27 +7,23 @@
 
 import Foundation
 
-final class StatisticService {
+final class StatisticService: StatisticServiceProtocol {
     private let storage: UserDefaults = .standard
-    private var correctAnswers = 0
     
-    private enum BestGameKeys: String{
+    private enum BestGameKeys: String {
         case date
         case correct
         case total
     }
-    private enum Keys: String {
-        case correct
-        case gamesCount
-    }
-}
-
-extension StatisticService: StatisticServiceProtocol {
     
+    private enum Keys: String {
+        case gamesCount
+        case highestCorrect
+    }
     
     var gamesCount: Int {
         get {
-            storage.integer(forKey: Keys.gamesCount.rawValue)
+            return storage.integer(forKey: Keys.gamesCount.rawValue)
         }
         set {
             storage.set(newValue, forKey: Keys.gamesCount.rawValue)
@@ -36,9 +32,6 @@ extension StatisticService: StatisticServiceProtocol {
     
     var bestGame: GameResult {
         get {
-           // let date = storage.object(forKey:"gameResult.date") as? Date ?? Date()
-           // let correct = storage.integer(forKey: "gameResult.correct")
-        //let total = storage.integer(forKey: "gameResult.total")
             let date = storage.object(forKey: BestGameKeys.date.rawValue) as? Date ?? Date()
             let correct = storage.integer(forKey: BestGameKeys.correct.rawValue)
             let total = storage.integer(forKey: BestGameKeys.total.rawValue)
@@ -52,20 +45,35 @@ extension StatisticService: StatisticServiceProtocol {
         }
     }
     
+    var highestCorrect: Int {
+        get {
+            return storage.integer(forKey: Keys.highestCorrect.rawValue)
+        }
+        set {
+            storage.set(newValue, forKey: Keys.highestCorrect.rawValue)
+        }
+    }
+    
     var totalAccuracy: Double {
-        get{
-            Double(correctAnswers/10*self.gamesCount*100)
+        get {
+            let highestCorrect = self.highestCorrect
+            let totalQuestions = gamesCount * 10
+            return totalQuestions > 0 ? Double(highestCorrect) / Double(totalQuestions) * 100 : 0
         }
     }
     
     func store(correct count: Int, total amount: Int) {
         let date = Date()
+        
         self.gamesCount += 1
+        
+        if count > highestCorrect {
+            highestCorrect = count
+        }
+        
         let gameResult = GameResult(correct: count, total: amount, date: date)
-        if gameResult.isBetterThan(bestGame){
+        if gameResult.isBetterThan(bestGame) {
             bestGame = gameResult
         }
     }
-    
-    
 }
