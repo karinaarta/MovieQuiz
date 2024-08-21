@@ -68,8 +68,6 @@ final class StatisticService: StatisticServiceProtocol{
         get {
             let totalCorrect = self.totalCorrect
             let totalQuestions = gamesCount * 10
-            print (totalCorrect)
-            print (totalQuestions)
             return totalQuestions != 0 ? 100 * Double(totalCorrect)/Double(totalQuestions): 0
         }
     }
