@@ -38,7 +38,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
-        super.viewDidLoad()
+        super.viewDidLoad() 
 
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         alertPresenter = AlertPresenter(viewController: self)
@@ -46,17 +46,14 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         questionFactory?.loadData()
         showCurrentQuestion()
         imageView.layer.cornerRadius = 20
-        
-        
-//        questionFactory.setup(delegate: self)
-//        self.questionFactory = questionFactory
-        
+        textLabel.font = UIFont(name: "YSDisplay-Medium", size: 23)
+        counterLabel.font = UIFont(name: "YSDisplay-Medium", size: 20) 
+
         self.alertPresenter = AlertPresenter(viewController: self)
         questionFactory?.requestNextQuestion()
         
     }
     
-    // MARK: - Private Methods
     func didLoadDataFromServer() {
         activityIndicator.isHidden = true // скрываем индикатор загрузки
         questionFactory?.requestNextQuestion()
@@ -65,6 +62,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     func didFailToLoadData(with error: Error) {
         showNetworkError(message: error.localizedDescription)
     }
+    // MARK: - Private Methods
     private func showLoadingIndicator() {
         activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
         activityIndicator.startAnimating() // включаем анимацию
