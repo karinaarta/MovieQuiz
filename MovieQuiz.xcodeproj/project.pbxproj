@@ -37,6 +37,7 @@
 		AF5B9DA52C8B36660085C01C /* StubNetworkClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5B9DA42C8B36660085C01C /* StubNetworkClient.swift */; };
 		AF5B9DCB2C8C21A20085C01C /* MovieQuizUITests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5B9DCA2C8C21A20085C01C /* MovieQuizUITests2.swift */; };
 		AF5B9DCD2C8C21A20085C01C /* MovieQuizUITests2LaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5B9DCC2C8C21A20085C01C /* MovieQuizUITests2LaunchTests.swift */; };
+		AF9000C92C907F36007B8BBB /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF9000C82C907F36007B8BBB /* MovieQuizPresenter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		AF5B9DC82C8C21A20085C01C /* MovieQuizUITests2.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieQuizUITests2.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF5B9DCA2C8C21A20085C01C /* MovieQuizUITests2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizUITests2.swift; sourceTree = "<group>"; };
 		AF5B9DCC2C8C21A20085C01C /* MovieQuizUITests2LaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizUITests2LaunchTests.swift; sourceTree = "<group>"; };
+		AF9000C82C907F36007B8BBB /* MovieQuizPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizPresenter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
+				AF9000C82C907F36007B8BBB /* MovieQuizPresenter.swift */,
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
 				AF5B9D492C6DFB0E0085C01C /* AlertPresenter.swift */,
 			);
@@ -372,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF9000C92C907F36007B8BBB /* MovieQuizPresenter.swift in Sources */,
 				AD5EE5DE284D7887003966EF /* UIColor+Extensions.swift in Sources */,
 				AF5B9D902C80A7790085C01C /* MostPopularMoviesModel.swift in Sources */,
 				AF5B9D4A2C6DFB0E0085C01C /* AlertPresenter.swift in Sources */,
