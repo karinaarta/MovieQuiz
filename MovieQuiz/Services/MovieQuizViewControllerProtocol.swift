@@ -16,4 +16,5 @@ protocol MovieQuizViewControllerProtocol: AnyObject {
     func showAnswerResult(isCorrect: Bool) 
     func showNetworkError(message: String)
     func changeStateButton(isEnabled: Bool)
+    func showAlert(model: AlertModel) 
 }

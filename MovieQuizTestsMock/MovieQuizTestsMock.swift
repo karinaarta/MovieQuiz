@@ -9,6 +9,18 @@ import XCTest
 @testable import MovieQuiz
 
 final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
+    func showAlert(model: MovieQuiz.AlertModel) {
+        
+    }
+    
+    func showAnswerResult(isCorrect: Bool) {
+
+    }
+    
+    func changeStateButton(isEnabled: Bool) {
+        
+    }
+    
     func show(quiz step: QuizStepViewModel) {
     
     }
@@ -35,8 +47,8 @@ final class MovieQuizViewControllerMock: MovieQuizViewControllerProtocol {
 
 final class MovieQuizPresenterTests: XCTestCase {
     func testPresenterConvertModel() throws {
-        let viewControllerMock = MovieQuizViewControllerMock()
-        let sut = MovieQuizPresenter(viewController: viewControllerMock)
+        _ = MovieQuizViewControllerMock()
+        let sut = MovieQuizPresenter()
         
         let emptyData = Data()
         let question = QuizQuestion(image: emptyData, text: "Question Text", correctAnswer: true)

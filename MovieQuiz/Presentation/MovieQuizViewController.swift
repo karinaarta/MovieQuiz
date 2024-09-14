@@ -104,6 +104,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         presenter.showNextQuestionOrResults()
       
     }
+    func showAlert(model: AlertModel) {
+        alertPresenter?.showAlert(model: model)
+    }
     
     // MARK: - QuestionFactoryDelegate
     

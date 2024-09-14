@@ -129,7 +129,7 @@ final class MovieQuizPresenter {
                 self.restartGame()
             }
             
-            viewController?.alertPresenter?.showAlert(model: alertModel)
+            viewController?.showAlert(model: alertModel)
         } else {
             self.switchToNextQuestion()
             showCurrentQuestion()
