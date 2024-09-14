@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, MovieQuizViewControllerProtocol{
     // MARK: - Lifecycle
     
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
@@ -52,11 +52,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         showNetworkError(message: error.localizedDescription)
     }
     // MARK: - Private Methods
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
-    private func hideLoadingIndicator() {
+    func hideLoadingIndicator() {
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
@@ -66,7 +66,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
         yesButton.isEnabled = isEnabled
     }
     
-    private func showNetworkError(message: String) {
+     func showNetworkError(message: String) {
         hideLoadingIndicator()
         
         let model = AlertModel(title: "Ошибка",
@@ -91,17 +91,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate{
     
     
      func showAnswerResult(isCorrect: Bool) {
-        if isCorrect {
-            presenter.correctAnswers += 1
-        }
-        highlightImageBorder(isCorrect: isCorrect)
-        changeStateButton(isEnabled: false)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.showNextQuestionOrResults()
-            changeStateButton(isEnabled: true)
-        }
+         presenter.showAnswerResult(isCorrect: isCorrect)
     }
    func highlightImageBorder(isCorrect: Bool) {
         imageView.layer.masksToBounds = true

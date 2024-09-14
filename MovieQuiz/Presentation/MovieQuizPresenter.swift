@@ -14,7 +14,8 @@ final class MovieQuizPresenter {
     var currentQuestion: QuizQuestion?
      var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol = StatisticService()
-    weak var viewController: MovieQuizViewController?
+    weak var viewController: MovieQuizViewControllerProtocol?
+   
     
     func restartGame() {
             currentQuestionIndex = 0
@@ -33,10 +34,6 @@ final class MovieQuizPresenter {
     func isLastQuestion() -> Bool {
         currentQuestionIndex == questionsAmount - 1
     }
-    
-//    func resetQuestionIndex() {
-//        currentQuestionIndex = 0
-//    }
     
     func switchToNextQuestion() {
         currentQuestionIndex += 1
