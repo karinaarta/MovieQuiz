@@ -6,22 +6,22 @@
 //
 import UIKit
 import Foundation
-final class MovieQuizPresenter {
+final class MovieQuizPresenter: MovieQuizPresenterProtocol {
     
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
-     var correctAnswers = 0
+    private var correctAnswers = 0
     var currentQuestion: QuizQuestion?
-     var questionFactory: QuestionFactoryProtocol?
+    var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticServiceProtocol = StatisticService()
     weak var viewController: MovieQuizViewControllerProtocol?
-   
+    
     
     func restartGame() {
-            currentQuestionIndex = 0
-            correctAnswers = 0
-            questionFactory?.requestNextQuestion()
-        }
+        currentQuestionIndex = 0
+        correctAnswers = 0
+        questionFactory?.requestNextQuestion()
+    }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
@@ -68,7 +68,7 @@ final class MovieQuizPresenter {
             self?.viewController?.show(quiz: viewModel)
         }
     }
-     func showCurrentQuestion() {
+    func showCurrentQuestion() {
         questionFactory?.requestNextQuestion()
     }
     
@@ -85,18 +85,18 @@ final class MovieQuizPresenter {
     }
     
     func showAnswerResult(isCorrect: Bool) {
-       if isCorrect {
-           self.correctAnswers += 1
-       }
+        if isCorrect {
+            self.correctAnswers += 1
+        }
         viewController?.highlightImageBorder(isCorrect: isCorrect)
         viewController?.changeStateButton(isEnabled: false)
-       
-       DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-           guard let self = self else { return }
-           self.showNextQuestionOrResults()
-           viewController?.changeStateButton(isEnabled: true)
-       }
-   }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.showNextQuestionOrResults()
+            viewController?.changeStateButton(isEnabled: true)
+        }
+    }
     
     func showNextQuestionOrResults() {
         if self.isLastQuestion() {

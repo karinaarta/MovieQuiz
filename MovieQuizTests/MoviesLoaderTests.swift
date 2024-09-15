@@ -23,7 +23,6 @@ class MoviesLoaderTests: XCTestCase {
             // Then
             switch result {
             case .success(let movies):
-               
                 XCTAssertEqual(movies.items.count, 2)
                 expectation.fulfill()
             case .failure(_):

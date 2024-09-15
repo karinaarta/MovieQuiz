@@ -24,13 +24,6 @@ final class MovieQuizUITests2: XCTestCase {
         
     }
     
-    func testExample() throws {
-        
-        let app = XCUIApplication()
-        app.launch()
-        
-        
-    }
     func testYesButton() {
         sleep(3)
         
